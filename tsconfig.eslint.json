@@ -1,0 +1,4 @@
+// tsconfig.eslint.json
+{
+  "include": ["./types/@env/env.d.tsx"]
+}
