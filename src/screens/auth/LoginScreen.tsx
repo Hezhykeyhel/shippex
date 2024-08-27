@@ -53,6 +53,7 @@ const LoginScreen = ({ navigation }: RootNavigationProps<"LoginScreen">) => {
       const response = await useLogin(userFields.usr, userFields.pwd);
       await AsyncStorage.setItem("loginResponse", JSON.stringify(response));
       setIsLoading(false);
+      modalRef?.current?.dismiss();
       navigation.replace("BottomTabs", {
         screen: "ShipmentsLandingPage",
       });
