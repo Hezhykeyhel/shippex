@@ -1,4 +1,4 @@
-import { RootNavigationProps } from "@/navigation/types";
+import { RootNavigationProps } from "@/services/navigations/types";
 import { imageIconPack } from "@/shared/assets/icons/imageIconPack";
 import { palette, PaletteType } from "@/shared/theme/palette";
 import SrfValue from "@/shared/utils/functions/SrfValue";

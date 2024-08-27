@@ -7,8 +7,8 @@ import { Box } from "@/shared/components";
 import { ImageIcon } from "@/shared/assets/icons/ImageIcon";
 import SrfValue from "@/shared/utils/functions/SrfValue";
 import { Dimensions, Platform, StatusBar } from "react-native";
-import Shipments from "@/screens/home/Shipments";
 import { palette } from "@/shared/theme/palette";
+import ShipmentsLandingPage from "@/screens/home/ShipmentsLandingPage";
 
 export type TabType = {
   tabText: string;
@@ -21,42 +21,39 @@ export type TabType = {
 const Tab = createBottomTabNavigator();
 
 const BottomTabs = () => {
-  const { width, height } = Dimensions.get("window");
+  const { width } = Dimensions.get("window");
+
+  useEffect(() => {
+    StatusBar.setBarStyle("dark-content");
+  }, []);
 
   const tabList: TabType[] = [
     {
       tabText: "Shipments",
       name: "Shipments",
       iconName: "shipments",
-      component: Shipments,
+      component: ShipmentsLandingPage,
     },
     {
       tabText: "Scan",
       name: "Scan",
       iconName: "scan",
-      component: Shipments,
+      component: ShipmentsLandingPage,
     },
     {
       tabText: "Wallet",
       name: "Wallet",
       iconName: "wallet",
-      component: Shipments,
+      component: ShipmentsLandingPage,
     },
 
     {
       tabText: "Profile",
       name: "Profile",
       iconName: "profile",
-      component: Shipments,
+      component: ShipmentsLandingPage,
     },
   ];
-
-  useEffect(() => {
-    if (Platform.OS === "android") {
-      StatusBar.setBackgroundColor(palette.whiteColor);
-    }
-    StatusBar.setBarStyle("dark-content");
-  }, []);
 
   return (
     <Tab.Navigator

@@ -1,262 +1,221 @@
-import { authLogin } from "@/api";
-import { RootNavigationProps } from "@/navigation/types";
+import { RootNavigationProps } from "@/services/navigations/types";
 import { ImageIcon } from "@/shared/assets/icons/ImageIcon";
 import { imageIconPack } from "@/shared/assets/icons/imageIconPack";
 import { Box } from "@/shared/components";
 import PrimaryButton from "@/shared/components/PrimaryButton";
 import { showToast } from "@/shared/components/Toast/showToast";
 import { Text } from "@/shared/components/Typography";
+import { useLogin } from "@/shared/services/api";
+import theme, { Theme } from "@/shared/theme";
 import { palette } from "@/shared/theme/palette";
 import SrfValue from "@/shared/utils/functions/SrfValue";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import React, { useEffect, useRef, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  ActivityIndicator,
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetModal,
+} from "@gorhom/bottom-sheet";
+import React, { useMemo, useRef, useState } from "react";
+import {
   Dimensions,
   Image,
   Keyboard,
-  Platform,
   SafeAreaView,
-  StatusBar,
   TextInput,
   TouchableOpacity,
 } from "react-native";
+
 const LoginScreen = ({ navigation }: RootNavigationProps<"LoginScreen">) => {
-  const modalRef = useRef<BottomSheetModal>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [formvalue, setFormvalue] = useState({
-    userName: "",
-    hashedPassword: "",
+  const [userFields, setUserFields] = useState({
+    usr: "",
+    pwd: "",
     urlLink: "https://www.brandimic.com",
   });
   const { width } = Dimensions.get("window");
   const [isPasFocused, setIsPasFocused] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const modalRef = useRef<BottomSheetModal>(null);
+  const snappoints = useMemo(() => ["95%", "95%"], []);
+  const renderBackdrop = (props: BottomSheetBackdropProps) => (
+    <BottomSheetBackdrop opacity={0.5} pressBehavior="close" {...props} />
+  );
+  const isDisabled = !!userFields.pwd.trim() && !!userFields.pwd.trim();
 
-  useEffect(() => {
-    if (!modalRef && Platform.OS === "android") {
-      StatusBar.setBackgroundColor(palette.primaryColor);
-    }
-  }, [modalRef]);
-
-  const isDisabled =
-    !!formvalue.hashedPassword.trim() && !!formvalue.hashedPassword.trim();
-
-  const handleModalLoginModal = () => {
+  const openLoginModal = () => {
     modalRef?.current?.present();
-    if (Platform.OS === "android") {
-      StatusBar.setBackgroundColor(palette.primaryBlack);
-    }
   };
 
   async function handleLogin() {
-    console.log(formvalue);
+    console.log(userFields);
     Keyboard.dismiss();
-    if (!formvalue.userName.trim()) {
-      showToast({ message: "Please enter your User Name" });
-      return;
-    }
-    if (!formvalue.hashedPassword.trim()) {
-      showToast({ message: "Please enter your password" });
-      return;
-    }
     setIsLoading(true);
     try {
-      const response = await authLogin(
-        formvalue.userName,
-        formvalue.hashedPassword,
-      );
-      console.log(response);
+      const response = await useLogin(userFields.usr, userFields.pwd);
+      await AsyncStorage.setItem("loginResponse", JSON.stringify(response));
       setIsLoading(false);
       navigation.replace("BottomTabs", {
-        screen: "ShipmentsLandingScreen",
-        payload: response,
+        screen: "ShipmentsLandingPage",
       });
     } catch (error: unknown | any) {
       setIsLoading(false);
       showToast({
-        message: `Unable to login, ${error?.message}`,
-        type: "danger",
+        message: "Unable to process your request, please try again",
       });
     }
   }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: palette.primaryColor }}>
-      <Box flex={1} backgroundColor={"primaryColor"}>
-        <Box
-          alignSelf={"center"}
-          flex={1}
-          width={width >= 500 ? "85%" : "100%"}>
-          <Box flex={1} justifyContent={"center"} alignItems={"center"}>
-            {/* <ImageIcon
-              source={imageIconPack.shipments}
+      <Box flex={1} backgroundColor="primaryColor">
+        <Box alignSelf="center" flex={1} width={width >= 500 ? "85%" : "100%"}>
+          <Box flex={1} justifyContent="center" alignItems="center">
+            <Image
+              source={imageIconPack.shippex}
               style={{ width: SrfValue(208), height: SrfValue(36) }}
-            /> */}
+            />
           </Box>
           <Box marginHorizontal="md" marginBottom="md">
             <PrimaryButton
-              onPress={handleModalLoginModal}
-              title="Login"
-              color="primaryColor"
-              backgroundColor="whiteColor"
+              onPress={openLoginModal}
+              label="Login"
+              labelProps={{
+                color: "primaryColor",
+                variant: "bold14",
+              }}
+              background="whiteColor"
             />
           </Box>
         </Box>
-        <BottomSheetModal ref={modalRef}>
-          <Box
-            flex={1}
-            justifyContent={"flex-end"}
-            backgroundColor={"primaryBlack"}>
-            <Box
-              backgroundColor={"primaryColor"}
-              height={"100%"}
-              width={"93%"}
-              borderTopRightRadius={"md"}
-              alignSelf={"center"}
-              borderTopLeftRadius={"md"}
-            />
-            <Box
-              backgroundColor={"whiteColor"}
-              position={"absolute"}
-              height={"98.5%"}
-              width={"100%"}
-              padding={"md"}
-              borderTopRightRadius={"sm"}
-              borderTopLeftRadius={"sm"}
-              flex={1}>
+        <BottomSheetModal
+          ref={modalRef}
+          snapPoints={snappoints}
+          backdropComponent={renderBackdrop}>
+          <Box flex={1}>
+            <Box flex={1}>
+              <TouchableOpacity
+                style={{
+                  alignItems: "flex-start",
+                }}
+                onPress={() => modalRef?.current?.dismiss()}>
+                <Box padding="md" flexDirection="row">
+                  <ImageIcon name="chevron" size="md" color="primaryColor" />
+                  <Text
+                    marginHorizontal="md"
+                    variant="regular16"
+                    color="primaryColor">
+                    Cancel
+                  </Text>
+                </Box>
+              </TouchableOpacity>
+              <Box marginBottom="md" paddingHorizontal="md">
+                <Box>
+                  <Text variant="bigHeader">Login</Text>
+                </Box>
+                <Box>
+                  <Text color="textColor2" variant="regular16">
+                    Please enter your First, Last name and your phone number in
+                    order to register
+                  </Text>
+                </Box>
+              </Box>
+              <Box paddingHorizontal="md" marginTop="lg">
+                <TextInput
+                  onChangeText={(text: string) => {
+                    setUserFields({ ...userFields, ...{ urlLink: text } });
+                  }}
+                  editable={false}
+                  placeholder="URL"
+                  value={userFields.urlLink}
+                  placeholderTextColor={"#a7a3b3"}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={{
+                    height: SrfValue(56),
+                    backgroundColor: "#F4F2F8",
+                    borderRadius: SrfValue(8),
+                    marginBottom: 20,
+                    paddingHorizontal: SrfValue(16),
+                    ...(theme.lightTheme.textVariants
+                      .medium16 as unknown as Theme),
+                    color: palette.primaryColor,
+                  }}
+                />
+                <TextInput
+                  onChangeText={(text: string) => {
+                    setUserFields({ ...userFields, ...{ usr: text } });
+                  }}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  placeholder="Username / Email"
+                  value={userFields.usr}
+                  placeholderTextColor="#a7a3b3"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={{
+                    height: SrfValue(56),
+                    backgroundColor: "#F4F2F8",
+                    borderRadius: SrfValue(8),
+                    borderWidth: isFocused ? SrfValue(1.5) : 0,
+                    marginBottom: 20,
+                    borderColor: isFocused
+                      ? palette.primaryColor
+                      : palette.transparent,
+                    marginVertical: SrfValue(6),
+                    paddingHorizontal: SrfValue(16),
+                    ...(theme.lightTheme.textVariants
+                      .medium16 as unknown as Theme),
+                    color: palette.primaryColor,
+                  }}
+                />
+                <TextInput
+                  onChangeText={(text: string) => {
+                    setUserFields({
+                      ...userFields,
+                      ...{ pwd: text },
+                    });
+                  }}
+                  secureTextEntry
+                  placeholder="Password"
+                  value={userFields.pwd}
+                  onFocus={() => setIsPasFocused(true)}
+                  onBlur={() => setIsPasFocused(false)}
+                  placeholderTextColor={"#a7a3b3"}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={{
+                    height: SrfValue(56),
+                    backgroundColor: "#F4F2F8",
+                    borderWidth: isPasFocused ? SrfValue(1.5) : 0,
+                    borderColor: isPasFocused
+                      ? palette.primaryColor
+                      : palette.transparent,
+                    borderRadius: SrfValue(8),
+                    paddingHorizontal: SrfValue(16),
+                    ...(theme.lightTheme.textVariants
+                      .medium16 as unknown as Theme),
+                    color: palette.primaryColor,
+                  }}
+                />
+              </Box>
               <Box
-                alignSelf={"center"}
-                flex={1}
-                width={width >= 500 ? "85%" : "100%"}>
-                <TouchableOpacity
-                  style={{ width: SrfValue(100) }}
-                  onPress={() => modalRef?.current?.dismiss()}>
-                  <Box
-                    marginVertical="md"
-                    flexDirection="row"
-                    alignItems="center"
-                    columnGap="sm">
-                    <ImageIcon name="chevron" size="md" color="primaryColor" />
-                    <Text variant="regular16" color="primaryColor">
-                      Cancel
-                    </Text>
-                  </Box>
-                </TouchableOpacity>
-                <Box rowGap={"md"} marginBottom={"md"} marginHorizontal={"sm"}>
-                  <Box>
-                    <Text variant="bold16">Login</Text>
-                  </Box>
-                  <Box>
-                    <Text color={"textColor2"} variant={"regular16"}>
-                      Please enter your First, Last name and your phone number
-                      in order to register
-                    </Text>
-                  </Box>
-                </Box>
-                <Box rowGap={"md"} marginHorizontal={"sm"} marginTop={"lg"}>
-                  <TextInput
-                    onChangeText={(text: string) => {
-                      setFormvalue({ ...formvalue, ...{ urlLink: text } });
-                    }}
-                    editable={false}
-                    placeholder="URL"
-                    value={formvalue.urlLink}
-                    placeholderTextColor={"#a7a3b3"}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={{
-                      height: SrfValue(56),
-                      color: palette.textColor,
-                      backgroundColor: "#efefef",
-                      borderRadius: SrfValue(8),
-                      paddingHorizontal: SrfValue(16),
-                      fontSize: SrfValue(16),
-                      letterSpacing: 0.7,
-                    }}
-                  />
-                  <TextInput
-                    onChangeText={(text: string) => {
-                      setFormvalue({ ...formvalue, ...{ userName: text } });
-                    }}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                    placeholder="Username / Email"
-                    value={formvalue.userName}
-                    placeholderTextColor={"#a7a3b3"}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={{
-                      height: SrfValue(56),
-                      color: palette.textColor,
-                      backgroundColor: "#efefef",
-                      borderRadius: SrfValue(8),
-                      borderWidth: isFocused ? SrfValue(1.5) : 0,
-                      borderColor: isFocused
-                        ? palette.primaryColor
-                        : palette.transparent,
-                      marginVertical: SrfValue(6),
-                      paddingHorizontal: SrfValue(16),
-                      fontSize: SrfValue(16),
-                      letterSpacing: 0.7,
-                    }}
-                  />
-                  <TextInput
-                    onChangeText={(text: string) => {
-                      setFormvalue({
-                        ...formvalue,
-                        ...{ hashedPassword: text },
-                      });
-                    }}
-                    secureTextEntry
-                    placeholder="Password"
-                    value={formvalue.hashedPassword}
-                    onFocus={() => setIsPasFocused(true)}
-                    onBlur={() => setIsPasFocused(false)}
-                    placeholderTextColor={"#a7a3b3"}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={{
-                      height: SrfValue(56),
-                      color: palette.textColor,
-                      backgroundColor: "#efefef",
-                      borderWidth: isPasFocused ? SrfValue(1.5) : 0,
-                      borderColor: isPasFocused
-                        ? palette.primaryColor
-                        : palette.transparent,
-                      borderRadius: SrfValue(8),
-                      paddingHorizontal: SrfValue(16),
-                      fontSize: SrfValue(16),
-                      letterSpacing: 0.7,
-                    }}
-                  />
-                </Box>
-                <Box
-                  position={"absolute"}
-                  bottom={0}
-                  width={"100%"}
-                  alignSelf={"center"}
-                  marginBottom={"md"}>
-                  {isLoading && (
-                    <ActivityIndicator
-                      style={{
-                        position: "absolute",
-                        right: "5%",
-                        top: "25%",
-                        zIndex: 10,
-                      }}
-                      size={"small"}
-                      color={palette.white}
-                    />
-                  )}
-                  <PrimaryButton
-                    onPress={handleLogin}
-                    title={"Login"}
-                    disabled={!isDisabled || isLoading}
-                    color={isDisabled ? "whiteColor" : "darkGrey"}
-                    backgroundColor={isDisabled ? "primaryColor" : "grayLight"}
-                  />
-                </Box>
+                position="absolute"
+                bottom={0}
+                width="100%"
+                paddingHorizontal="md"
+                alignSelf="center"
+                marginBottom="md">
+                <PrimaryButton
+                  onPress={handleLogin}
+                  label="Login"
+                  isLoading={isLoading}
+                  labelProps={{
+                    color: isDisabled ? "white" : "disabledColor",
+                    variant: "bold14",
+                  }}
+                  disabled={!isDisabled || isLoading}
+                  background={isDisabled ? "primaryColor" : "primaryFaded"}
+                />
               </Box>
             </Box>
           </Box>

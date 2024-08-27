@@ -1,45 +1,84 @@
-import { TouchableOpacityProps, TouchableOpacity } from 'react-native'
-import React from 'react'
-import { RestyleTextProps, Text } from './Typography/Text';
-import { VariantProps, backgroundColor, border, createRestyleComponent, createVariant, layout, opacity, position, shadow, spacing, visible } from '@shopify/restyle';
-import { Theme } from '../theme';
-import { Box, BoxProps } from './Layout/Box';
-import { PaletteType } from '../theme/palette';
-import SrfValue from '../utils/functions/SrfValue';
+import {
+  ActivityIndicator,
+  GestureResponderEvent,
+  PressableProps,
+} from "react-native";
+import Animated from "react-native-reanimated";
+import { Box } from "./Layout/Box";
+import { palette, PaletteType } from "../theme/palette";
+import { Text, TextProps } from "./Typography";
+import { useTheme } from "../theme";
+import Pressable from "./Pressable";
 
-type PrimaryButtonProps = {
+const AnimatedBox = Animated.createAnimatedComponent(Box);
+
+export type ButtonProps = PressableProps & {
+  background?: PaletteType;
+  iconSize?: number;
+  isLoading?: boolean;
   disabled?: boolean;
-  color?:PaletteType
-  backgroundColor?:PaletteType
-  touchableOpacityProps?: TouchableOpacityProps;
-  onPress?: TouchableOpacityProps['onPress']; title: string;
-}
+  label: string;
+  labelProps?: TextProps;
+  variant?: PaletteType;
+};
 
-type RestyleProps = BoxProps & VariantProps<Theme, "buttonVariants">;
-
-const PrimaryButton = ({ disabled,backgroundColor="primaryBlack", onPress, title, touchableOpacityProps,color="whiteColor", ...rest }: PrimaryButtonProps) => {
+/**
+ * Custom `BaseButton` component with two variants (primary & secondary)
+ * inherits Pressable Props
+ * @see {@link PressableProps}
+ */
+function BaseButton({
+  background = "primaryColor",
+  iconSize = 16,
+  isLoading = false,
+  disabled = false,
+  label,
+  labelProps,
+  variant = "primaryColor",
+  onPress,
+  ...rest
+}: ButtonProps) {
+  const { spacing } = useTheme();
+  const handlePress = (event?: GestureResponderEvent | undefined) => {
+    if (isLoading) return;
+    if (onPress) {
+      onPress(event);
+    }
+  };
   return (
-    <TouchableOpacity
-      activeOpacity={0.75}
+    <Pressable
+      alignItems="center"
+      backgroundColor={background}
+      borderRadius="sm"
       disabled={disabled}
-      onPress={onPress}
-      {...touchableOpacityProps}
-    >
-      <Box
-        alignItems="center"
-        flexDirection="row"
-        width={"100%"}
-        height={SrfValue(55)}
-        justifyContent={"center"}
-        borderWidth={0.5}
-      borderRadius={"sm"}
-        backgroundColor={backgroundColor}
-        {...rest}
-      >
-        <Text letterSpacing={0.7} variant={"bold16"} color={color}>{title}</Text>
-      </Box>
-    </TouchableOpacity>
-  )
+      justifyContent="center"
+      onPress={handlePress}
+      paddingVertical="md"
+      type="scale"
+      {...rest}>
+      {isLoading ? (
+        <AnimatedBox flexDirection="row" key={`${isLoading}`}>
+          <Text color="white" variant="medium14">
+            {isLoading && "Please wait...  "}
+          </Text>
+          <ActivityIndicator size={24} color={palette.white} />
+        </AnimatedBox>
+      ) : (
+        <AnimatedBox
+          alignItems="center"
+          flexDirection="row"
+          justifyContent="center">
+          <Text
+            color="whiteColor"
+            textAlign="justify"
+            variant="medium14"
+            {...labelProps}>
+            {label}
+          </Text>
+        </AnimatedBox>
+      )}
+    </Pressable>
+  );
 }
 
-export default PrimaryButton
+export default BaseButton;

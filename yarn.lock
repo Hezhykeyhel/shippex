@@ -1764,9 +1764,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gorhom/bottom-sheet@npm:^4.6.1":
-  version: 4.6.3
-  resolution: "@gorhom/bottom-sheet@npm:4.6.3"
+"@gorhom/bottom-sheet@npm:^4.6.4":
+  version: 4.6.4
+  resolution: "@gorhom/bottom-sheet@npm:4.6.4"
   dependencies:
     "@gorhom/portal": 1.0.14
     invariant: ^2.2.4
@@ -1782,7 +1782,7 @@ __metadata:
       optional: true
     "@types/react-native":
       optional: true
-  checksum: 718c55a89b0e18581eae6080d1d21caabf4895088e01f0dfe17b5891835a110d7aee1d0cb1b9e623efc16b598fdb28c2ec929e0ed74bfbca283306191d8a5c41
+  checksum: 2cea033c4f321b93fdbf61470b507b5efd51425a8ab927b49d7aaa1d9f0568cbcfb188e385311389dbffbafe47b941dbd3e60f74b1d663a1a2d73262e2719f85
   languageName: node
   linkType: hard
 
@@ -2246,6 +2246,17 @@ __metadata:
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
   checksum: 6ad6a00fc4f2f2cfc6bff76fb1d88b8ee20bc0601e18ebb01b6d4be583733a860239a521a7fbca73b612e66705078809483549d2b18f370eb346c5155c8e4a0f
+  languageName: node
+  linkType: hard
+
+"@react-native-async-storage/async-storage@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@react-native-async-storage/async-storage@npm:2.0.0"
+  dependencies:
+    merge-options: ^3.0.4
+  peerDependencies:
+    react-native: ^0.0.0-0 || >=0.65 <1.0
+  checksum: 7007a411f13988594a3f9b5ebb29f1554ab65ff2bd90814fa8b125fa68b69c431bdfcd38769ae2dcb6505aec2bad9296f0a0fa1ac8f123007eda49c826f2d138
   languageName: node
   linkType: hard
 
@@ -6222,77 +6233,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shippexmobile@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "shippexmobile@workspace:."
-  dependencies:
-    "@babel/core": ^7.20.0
-    "@babel/plugin-proposal-export-namespace-from": ^7.18.9
-    "@babel/plugin-transform-class-properties": ^7.24.7
-    "@babel/plugin-transform-private-methods": ^7.24.7
-    "@babel/plugin-transform-private-property-in-object": ^7.24.7
-    "@babel/preset-env": ^7.24.7
-    "@babel/preset-flow": ^7.24.7
-    "@babel/preset-react": ^7.24.7
-    "@babel/runtime": ^7.24.6
-    "@gorhom/bottom-sheet": ^4.6.1
-    "@react-native/babel-preset": 0.74.84
-    "@react-native/eslint-config": ^0.74.84
-    "@react-native/metro-config": ^0.74.84
-    "@react-native/typescript-config": 0.74.84
-    "@react-navigation/bottom-tabs": ^6.5.20
-    "@react-navigation/elements": ^1.3.30
-    "@react-navigation/native": ^6.1.17
-    "@react-navigation/native-stack": ^6.9.26
-    "@react-navigation/stack": ^6.3.29
-    "@shopify/restyle": ^2.4.4
-    "@tsconfig/react-native": ^3.0.5
-    "@types/crypto-js": ^4.2.2
-    "@types/metro-config": ^0.76.3
-    "@types/node-forge": ^1.3.11
-    "@types/react": ^18.2.6
-    "@types/react-native-base64": ^0.2.2
-    "@types/react-native-dotenv": ^0.2.2
-    "@types/react-test-renderer": ^18.0.0
-    axios: ^1.7.2
-    babel-jest: ^29.6.3
-    babel-plugin-module-resolver: ^5.0.2
-    eslint: ^8.57.0
-    eslint-plugin-import: ^2.29.1
-    formik: ^2.4.6
-    jest: ^29.6.3
-    metro-react-native-babel-preset: ^0.77.0
-    prettier: 2.8.8
-    react: 18.2.0
-    react-native: 0.74.2
-    react-native-elements: ^3.4.3
-    react-native-flash-message: ^0.4.2
-    react-native-gesture-bottom-sheet: ^1.1.0
-    react-native-gesture-handler: ^2.16.2
-    react-native-interaction-provider: ^1.0.1
-    react-native-keyboard-aware-scroll-view: ^0.9.5
-    react-native-reanimated: ^3.12.0
-    react-native-responsive-fontsize: ^0.5.1
-    react-native-restart: ^0.0.27
-    react-native-safe-area-context: ^4.10.4
-    react-native-screens: ^3.31.1
-    react-native-send-intent: ^1.3.0
-    react-native-shake-text: ^0.1.2
-    react-native-splash-screen: ^3.3.0
-    react-native-svg: ^15.3.0
-    react-native-svg-transformer: ^1.4.0
-    react-native-swipe-gestures: ^1.0.5
-    react-native-tab-view: ^3.5.2
-    react-native-toast-message: ^2.2.0
-    react-native-webview: ^13.10.3
-    react-test-renderer: 18.2.0
-    run-script-os: ^1.1.6
-    typescript: 5.0.4
-    uuid: ^9.0.1
-    yup: ^1.4.0
-  languageName: unknown
-  linkType: soft
-
 "hoist-non-react-statics@npm:^3.3.0, hoist-non-react-statics@npm:^3.3.2":
   version: 3.3.2
   resolution: "hoist-non-react-statics@npm:3.3.2"
@@ -6688,6 +6628,13 @@ __metadata:
   version: 3.0.3
   resolution: "is-path-inside@npm:3.0.3"
   checksum: abd50f06186a052b349c15e55b182326f1936c89a78bf6c8f2b707412517c097ce04bc49a0ca221787bc44e1049f51f09a2ffb63d22899051988d3a618ba13e9
+  languageName: node
+  linkType: hard
+
+"is-plain-obj@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "is-plain-obj@npm:2.1.0"
+  checksum: cec9100678b0a9fe0248a81743041ed990c2d4c99f893d935545cfbc42876cbe86d207f3b895700c690ad2fa520e568c44afc1605044b535a7820c1d40e38daa
   languageName: node
   linkType: hard
 
@@ -7832,6 +7779,15 @@ __metadata:
   version: 5.2.1
   resolution: "memoize-one@npm:5.2.1"
   checksum: a3cba7b824ebcf24cdfcd234aa7f86f3ad6394b8d9be4c96ff756dafb8b51c7f71320785fbc2304f1af48a0467cbbd2a409efc9333025700ed523f254cb52e3d
+  languageName: node
+  linkType: hard
+
+"merge-options@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "merge-options@npm:3.0.4"
+  dependencies:
+    is-plain-obj: ^2.1.0
+  checksum: d86ddb3dd6e85d558dbf25dc944f3527b6bacb944db3fdda6e84a3f59c4e4b85231095f58b835758b9a57708342dee0f8de0dffa352974a48221487fe9f4584f
   languageName: node
   linkType: hard
 
@@ -10044,6 +10000,78 @@ __metadata:
   checksum: 5f01201f4ef504d4c6a9d0d283fa17075f6770bfbe4c5850b074974c68062f37929ca61700d95ad2ac8822e14e8c4b990ca0e6e9272e64befd74ce5e19f0736b
   languageName: node
   linkType: hard
+
+"shippexmobile@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "shippexmobile@workspace:."
+  dependencies:
+    "@babel/core": ^7.20.0
+    "@babel/plugin-proposal-export-namespace-from": ^7.18.9
+    "@babel/plugin-transform-class-properties": ^7.24.7
+    "@babel/plugin-transform-private-methods": ^7.24.7
+    "@babel/plugin-transform-private-property-in-object": ^7.24.7
+    "@babel/preset-env": ^7.24.7
+    "@babel/preset-flow": ^7.24.7
+    "@babel/preset-react": ^7.24.7
+    "@babel/runtime": ^7.24.6
+    "@gorhom/bottom-sheet": ^4.6.4
+    "@react-native-async-storage/async-storage": ^2.0.0
+    "@react-native/babel-preset": 0.74.84
+    "@react-native/eslint-config": ^0.74.84
+    "@react-native/metro-config": ^0.74.84
+    "@react-native/typescript-config": 0.74.84
+    "@react-navigation/bottom-tabs": ^6.5.20
+    "@react-navigation/elements": ^1.3.30
+    "@react-navigation/native": ^6.1.17
+    "@react-navigation/native-stack": ^6.9.26
+    "@react-navigation/stack": ^6.3.29
+    "@shopify/restyle": ^2.4.4
+    "@tsconfig/react-native": ^3.0.5
+    "@types/crypto-js": ^4.2.2
+    "@types/metro-config": ^0.76.3
+    "@types/node-forge": ^1.3.11
+    "@types/react": ^18.2.6
+    "@types/react-native-base64": ^0.2.2
+    "@types/react-native-dotenv": ^0.2.2
+    "@types/react-test-renderer": ^18.0.0
+    axios: ^1.7.2
+    babel-jest: ^29.6.3
+    babel-plugin-module-resolver: ^5.0.2
+    eslint: ^8.57.0
+    eslint-plugin-import: ^2.29.1
+    formik: ^2.4.6
+    jest: ^29.6.3
+    metro-react-native-babel-preset: ^0.77.0
+    prettier: 2.8.8
+    react: 18.2.0
+    react-native: 0.74.2
+    react-native-elements: ^3.4.3
+    react-native-flash-message: ^0.4.2
+    react-native-gesture-bottom-sheet: ^1.1.0
+    react-native-gesture-handler: ^2.16.2
+    react-native-interaction-provider: ^1.0.1
+    react-native-keyboard-aware-scroll-view: ^0.9.5
+    react-native-reanimated: ^3.12.0
+    react-native-responsive-fontsize: ^0.5.1
+    react-native-restart: ^0.0.27
+    react-native-safe-area-context: ^4.10.4
+    react-native-screens: ^3.31.1
+    react-native-send-intent: ^1.3.0
+    react-native-shake-text: ^0.1.2
+    react-native-splash-screen: ^3.3.0
+    react-native-svg: ^15.3.0
+    react-native-svg-transformer: ^1.4.0
+    react-native-swipe-gestures: ^1.0.5
+    react-native-tab-view: ^3.5.2
+    react-native-toast-message: ^2.2.0
+    react-native-webview: ^13.10.3
+    react-test-renderer: 18.2.0
+    run-script-os: ^1.1.6
+    typescript: 5.0.4
+    uuid: ^9.0.1
+    yup: ^1.4.0
+  languageName: unknown
+  linkType: soft
 
 "side-channel@npm:^1.0.4, side-channel@npm:^1.0.6":
   version: 1.0.6

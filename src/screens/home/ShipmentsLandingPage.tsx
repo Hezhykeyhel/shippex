@@ -7,7 +7,13 @@ import { Text } from "@/shared/components/Typography";
 import { getShipmentList, getShipmentStatusList } from "@/shared/services/api";
 import { palette } from "@/shared/theme/palette";
 import SrfValue from "@/shared/utils/functions/SrfValue";
-import React, { useEffect, useState } from "react";
+import {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetModal,
+} from "@gorhom/bottom-sheet";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -36,7 +42,10 @@ type StatusListType = {
   status: string;
 };
 
-const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
+const ShipmentsLandingPage = ({
+  navigation,
+  route,
+}: RootNavigationProps<"ShipmentsLandingPage">) => {
   const { width } = Dimensions.get("window");
   const [isLoading, setIsLoading] = useState(false);
   const [allIsChecked, setAllIsChecked] = useState(false);
@@ -44,11 +53,18 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
   const [filterstatusList, setFilterStatusList] = useState<StatusListType[]>(
     [],
   );
+  const [selectedTags, setSelectedTags] = useState([]);
+
   const [filterPayload, setFilterPayload] = useState<StatusListType[]>([]);
-  const [modalVisible, setModalVisible] = useState(false);
   const [shipments, setShipments] = useState([]);
 
-  const [tags, setTags] = useState([
+  const modalRef = useRef<BottomSheetModal>(null);
+  const snappoints = useMemo(() => ["45%", "45%"], []);
+  const renderBackdrop = (props: BottomSheetBackdropProps) => (
+    <BottomSheetBackdrop opacity={0.5} pressBehavior="close" {...props} />
+  );
+
+  const tags = [
     { title: "Received", id: 1 },
     { title: "Putaway", id: 2 },
     { title: "Delivered", id: 3 },
@@ -56,15 +72,13 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
     { title: "Rejected", id: 5 },
     { title: "Lost", id: 6 },
     { title: "On Hold", id: 7 },
-  ]);
-
-  const { full_name } = route.params || "Ibrahim Shaker";
+  ];
 
   const handleGetStatus = async () => {
     setIsLoading(true);
     try {
       const response = await getShipmentStatusList();
-      const newList = response.message.map(item => ({
+      const newList = response.message.map((item: any) => ({
         ...item,
         ...{ ischecked: false },
       }));
@@ -76,7 +90,7 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
     }
   };
 
-  const fetchShipments = async (searchTerm= []) => {
+  const fetchShipments = async (searchTerm = []) => {
     try {
       const response = await getShipmentList(searchTerm);
       setShipments(response);
@@ -84,16 +98,22 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
       setIsLoading(false);
     }
   };
-
+  const [loginResponse, setLoginResponse] = useState<any>();
+  const response = async () => {
+    const payload = await AsyncStorage.getItem("loginResponse");
+    if (payload !== null) {
+      setLoginResponse(JSON.parse(payload));
+    } else {
+      setLoginResponse({});
+    }
+  };
 
   useEffect(() => {
+    response();
     handleGetStatus();
     fetchShipments();
   }, []);
 
-
-  console.log(shipments);
-  
   const handleFilterBySearch = (v = "") => {
     const newList = statusList.filter(item => {
       if (
@@ -109,22 +129,15 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
   };
 
   const handleMarkAll = () => {
-    if (!allIsChecked) {
-      const newList = filterstatusList.map(item => ({
-        ...item,
-        ...{ ischecked: true },
-      }));
-      setFilterStatusList(newList);
-      setAllIsChecked(true);
-      return;
-    }
-    const newList = statusList.map(item => ({
+    const newList = filterstatusList.map(item => ({
       ...item,
-      ...{ ischecked: false },
+      ischecked: !allIsChecked, // Toggle ischecked based on allIsChecked
     }));
-    setStatusList(newList);
-    setAllIsChecked(false);
+
+    setFilterStatusList(newList);
+    setAllIsChecked(!allIsChecked); // Toggle allIsChecked
   };
+
   const handleMarkOne = id => {
     let newList = filterstatusList.map((item, index) => {
       if (id === index) {
@@ -135,23 +148,19 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
     const isevery = newList.every(item => item.ischecked);
 
     setAllIsChecked(isevery);
-
     setFilterStatusList(newList);
   };
 
-  // const handleExpanded () => {
-
-  // }
-
-  const renderMainHeader = () => {
+  const renderHeader = () => {
     return (
       <Box
-        justifyContent={"space-between"}
-        alignItems={"center"}
-        flexDirection={"row"}>
+        justifyContent="space-between"
+        alignItems="center"
+        flexDirection="row">
         <ImageIcon name="frame" size="xl" />
         <Image
           source={imageIconPack.shippex}
+          resizeMode="contain"
           style={{
             width: SrfValue(93),
             height: SrfValue(16),
@@ -162,25 +171,28 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
       </Box>
     );
   };
-  const renderGreeting = () => {
+  const greetings = () => {
     return (
       <Box>
-        <Text color={"textColor2"}>Hello</Text>
-        <Text fontSize={RFValue(28)} fontWeight={"600"}>
-          {full_name}
+        <Text color="textColor2" variant="medium16">
+          Hello,
+        </Text>
+        <Text color="backgroundblack" variant="header">
+          {loginResponse?.full_name}
         </Text>
       </Box>
     );
   };
-  const renderFilterAndScan = () => {
+  const filterAndScan = () => {
     return (
       <Box
-        width={"100%"}
-        marginTop={"xs"}
-        flexDirection={"row"}
-        justifyContent={"space-between"}>
+        width="100%"
+        marginTop="xs"
+        flexDirection="row"
+        justifyContent="space-between">
         <TouchableOpacity
-          onPress={() => setModalVisible(true)}
+          activeOpacity={0.7}
+          onPress={() => modalRef?.current?.present()}
           style={{
             backgroundColor: palette.grayLight,
             justifyContent: "center",
@@ -192,9 +204,10 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
             height: SrfValue(58),
           }}>
           <ImageIcon size="md" name="filter" />
-          <Text variant={"regular16"}>Filters</Text>
+          <Text variant="regular16">Filters</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          activeOpacity={0.7}
           style={{
             backgroundColor: palette.primaryColor,
             justifyContent: "center",
@@ -213,19 +226,21 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
       </Box>
     );
   };
-  const renderShipmentList = () => {
+  const renderShipmentDetails = () => {
     const renderItem = ({ item, index }: StatusListType) => {
       return (
         <Box
-          flexDirection={"row"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-          backgroundColor={"grayLight"}
-          borderRadius={"sm"}
-          padding={"sm"}
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="center"
+          backgroundColor="grayLight"
+          borderRadius="sm"
+          padding="sm"
           paddingHorizontal={"md"}>
           <Box>
-            <TouchableOpacity onPress={() => handleMarkOne(index)}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => handleMarkOne(index)}>
               <ImageIcon
                 name={item.ischecked ? "checkedbox" : "checkbox"}
                 size="md"
@@ -237,20 +252,20 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
           </Box>
           <Box>
             <Text
-              textTransform={"uppercase"}
-              color={"textColor2"}
-              variant={"regular12"}>
+              textTransform="uppercase"
+              color="textColor2"
+              variant="regular12">
               {item.name}
             </Text>
-            <Text variant={"medium16"} fontWeight={"600"}>
+            <Text variant="medium16" fontWeight="600">
               23456798765
             </Text>
-            <Box flexDirection={"row"} alignItems={"center"} columnGap={"xs"}>
-              <Text color={"textColor2"} variant={"regular12"}>
+            <Box flexDirection="row" alignItems="center" columnGap="xs">
+              <Text color="textColor2" variant="regular12">
                 Cairo
               </Text>
               <ImageIcon name="arrow" size="xs" />
-              <Text color={"textColor2"} variant={"regular12"}>
+              <Text color="textColor2" variant="regular12">
                 Alexandra
               </Text>
             </Box>
@@ -258,25 +273,23 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
           <Box>
             <Box
               borderWidth={1}
-              borderRadius={"sm"}
-              padding={"xs"}
-              backgroundColor={"primaryColor10"}
-              borderColor={"whiteColor"}>
+              borderRadius="sm"
+              paddingVertical="sm"
+              paddingHorizontal="md"
+              backgroundColor="primaryColor10"
+              borderColor="whiteColor">
               <Text
                 style={{ color: item.color }}
-                variant={"regular10"}
-                fontWeight={"500"}
-                textTransform={"uppercase"}>
-                Received
+                variant="regular10"
+                fontWeight="500"
+                textTransform="uppercase">
+                RECEIVED
               </Text>
             </Box>
           </Box>
           <Box>
             <TouchableOpacity>
-              <Box
-                backgroundColor={"whiteColor"}
-                padding={"xs"}
-                borderRadius={"sm"}>
+              <Box backgroundColor="whiteColor" padding="xs" borderRadius="sm">
                 <ImageIcon name="arrowexpand" size="sm" />
               </Box>
             </TouchableOpacity>
@@ -285,24 +298,22 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
       );
     };
     return (
-      <Box marginTop={"sm"} rowGap={"sm"}>
-        <Box flexDirection={"row"} justifyContent={"space-between"}>
+      <Box marginTop="sm" rowGap="sm">
+        <Box flexDirection="row" justifyContent="space-between">
           <Box>
-            <Text fontWeight={"600"} variant={"bold22"}>
-              Shipment
-            </Text>
+            <Text variant="bold16">Shipment</Text>
           </Box>
-          <Box flexDirection={"row"} alignItems={"center"} columnGap={"sm"}>
-            <TouchableOpacity onPress={handleMarkAll}>
+          <TouchableOpacity onPress={handleMarkAll} activeOpacity={0.7}>
+            <Box flexDirection="row" alignItems="center" columnGap="sm">
               <ImageIcon
                 name={allIsChecked ? "checkedbox" : "checkbox"}
                 size="md"
               />
-            </TouchableOpacity>
-            <Text variant={"regular18"} color={"primaryColor"}>
-              {!allIsChecked ? "Mark All" : "Unmark All"}
-            </Text>
-          </Box>
+              <Text variant="regular18" color="primaryColor">
+                {!allIsChecked ? "Mark All" : "Unmark All"}
+              </Text>
+            </Box>
+          </TouchableOpacity>
         </Box>
         <FlatList
           contentContainerStyle={{ rowGap: SrfValue(10) }}
@@ -320,22 +331,35 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
     );
   };
 
-
   const renderTags = ({ item }) => {
+    const isSelected = selectedTags.includes(item.id);
+
     return (
       <TouchableOpacity
+        activeOpacity={0.7}
+        style={{
+          justifyContent: "space-between",
+          width: "32%",
+        }}
         onPress={() => {
-          setFilterPayload(prev => [...prev, item.title]);
+          setSelectedTags(prev => {
+            if (isSelected) {
+              return prev.filter(tagId => tagId !== item.id);
+            } else {
+              return [...prev, item.id];
+            }
+          });
         }}>
         <Box
-          backgroundColor={"grayLight"}
-          padding={"md"}
-          paddingVertical={"none"}
-          marginHorizontal={"sm"}
-          borderRadius={"sm"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          height={SrfValue(56)}>
+          backgroundColor="grayLight"
+          borderColor={isSelected ? "filterColor" : "grayLight"} // Change color if selected
+          width="90%"
+          padding="md"
+          borderWidth={isSelected ? 2 : 0}
+          marginHorizontal="sm"
+          borderRadius="md"
+          justifyContent="center"
+          alignItems="center">
           <Text>{item.title}</Text>
         </Box>
       </TouchableOpacity>
@@ -343,85 +367,78 @@ const Shipments = ({ navigation, route }: RootNavigationProps<"Shipments">) => {
   };
 
   return (
-    <Box flex={1} backgroundColor={"whiteColor"} padding={"md"}>
+    <Box flex={1} backgroundColor="whiteColor" padding="md">
       <Box
-        rowGap={"md"}
-        alignSelf={"center"}
+        rowGap="md"
+        alignSelf="center"
         flex={1}
+        paddingTop="lg"
         width={width >= 500 ? "87%" : "100%"}>
-        {renderMainHeader()}
-        {renderGreeting()}
-        {<SearchBar getSearchInput={c => handleFilterBySearch(c)} />}
-        {renderFilterAndScan()}
-        {renderShipmentList()}
+        {renderHeader()}
+        {greetings()}
+        <SearchBar getSearchInput={c => handleFilterBySearch(c)} />
+        {filterAndScan()}
+        {renderShipmentDetails()}
       </Box>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(false);
-          setFilterPayload([]);
-        }}>
+      <BottomSheetModal
+        ref={modalRef}
+        snapPoints={snappoints}
+        backdropComponent={renderBackdrop}>
         <TouchableWithoutFeedback
           onPress={() => {
-            setModalVisible(false);
+            modalRef?.current?.dismiss();
             setFilterPayload([]);
           }}>
           <Box
-            flex={1}
-            justifyContent={"flex-end"}
-            backgroundColor={"modalBgColor"}>
+            height="100%"
+            backgroundColor="whiteColor"
+            zIndex="modal"
+            borderTopLeftRadius="lg"
+            borderTopRightRadius="lg">
             <Box
-              height={"37%"}
-              backgroundColor={"whiteColor"}
-              zIndex={"modal"}
-              borderTopLeftRadius={"lg"}
-              borderTopRightRadius={"lg"}>
-              <Box
-                flexDirection={"row"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
-                paddingHorizontal={"lg"}
-                padding={"md"}
-                borderBottomWidth={0.5}
-                borderBottomColor={"textColor2"}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalVisible(false);
-                    setFilterPayload([]);
-                  }}>
-                  <Text
-                    color={"primaryColor"}
-                    fontWeight={"500"}
-                    variant={"bold16"}>
-                    Cancel
-                  </Text>
-                </TouchableOpacity>
-                <Text fontWeight={"600"} variant={"bold18"}>
-                  Filters
+              flexDirection="row"
+              justifyContent="space-between"
+              alignItems="center"
+              paddingHorizontal="lg"
+              padding="md"
+              borderBottomWidth={0.5}
+              borderBottomColor="textColor2">
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => {
+                  modalRef?.current?.dismiss();
+                  setFilterPayload([]);
+                }}>
+                <Text color="primaryColor" variant="medium14">
+                  Cancel
                 </Text>
-                <TouchableOpacity>
-                  <Text
-                    color={"primaryColor"}
-                    fontWeight={"500"}
-                    variant={"bold16"}>
-                    Done
-                  </Text>
-                </TouchableOpacity>
-              </Box>
-              <FlatList
-                contentContainerStyle={{ gap: SrfValue(20), margin: 15 }}
-                numColumns={3}
-                data={tags}
-                renderItem={renderTags}
-              />
+              </TouchableOpacity>
+              <Text variant="medium14">Filters</Text>
+              <TouchableOpacity>
+                <Text color="primaryColor" variant="medium14">
+                  Done
+                </Text>
+              </TouchableOpacity>
             </Box>
+            <Text variant="medium14" padding="md">
+              SHIPMENT STATUS
+            </Text>
+            <FlatList
+              contentContainerStyle={{
+                justifyContent: "space-between",
+                paddingHorizontal: 5,
+                gap: 10,
+                marginTop: 4,
+              }}
+              numColumns={3}
+              data={tags}
+              renderItem={renderTags}
+            />
           </Box>
         </TouchableWithoutFeedback>
-      </Modal>
+      </BottomSheetModal>
     </Box>
   );
 };
 
-export default Shipments;
+export default ShipmentsLandingPage;

@@ -6,15 +6,13 @@ export type RootStackParameterList = {
   IntroductionScreen: undefined;
   LoginScreen: undefined;
   ShipmentsLandingPage: {
-    payload: {
-      full_name: string;
-      home_page: string;
-      message: string;
-    };
+    full_name: string;
+    home_page: string;
+    message: string;
   };
   Scan: undefined;
   Wallet: undefined;
-  BottomTabs: { screen: string; payload: {} };
+  BottomTabs: any;
   Profile: undefined;
 };
 
