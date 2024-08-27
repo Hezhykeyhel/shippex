@@ -325,9 +325,11 @@ const ShipmentsLandingPage = ({
           ListFooterComponent={<Box height={SrfValue(330)} />}
           data={filterstatusList}
           ListEmptyComponent={
-            <Text variant="medium14" padding="md">
-              No search found
-            </Text>
+            isLoading ? null : (
+              <Text variant="medium14" padding="md">
+                No search found
+              </Text>
+            )
           }
           refreshControl={
             <RefreshControl
