@@ -239,175 +239,171 @@ const lightTheme = createTheme({
       backgroundColor: "transparent",
     },
   },
-  
+
   textVariants: {
-    body: {},
-    bold8: {
-      color: "textColor",
-      fontSize: RFValue(8),
+    body: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Regular",
+      fontSize: 14,
+      fontWeight: "400",
     },
     bold10: {
-      color: "textColor",
-      fontSize: RFValue(10),
+      color: "textColorTint",
+      fontFamily: "Poppins-Bold",
+      fontSize: 10,
+      fontWeight: "600",
     },
     bold12: {
-      color: "textColor",
-      fontSize: RFValue(12),
+      color: "textColorTint",
+      fontFamily: "Poppins-Bold",
+      fontSize: 12,
+      fontWeight: "600",
     },
     bold14: {
-      color: "textColor",
-      fontSize: RFValue(14),
+      color: "textColorTint",
+      fontFamily: "Poppins-Bold",
+      fontSize: 14,
+      fontWeight: "600",
     },
     bold16: {
-      color: "textColor",
-      fontSize: RFValue(16),
+      color: "textColorTint",
+      fontFamily: "Poppins-Bold",
+      fontSize: 16,
+      fontWeight: "600",
     },
-    bold18: {
-      color: "textColor",
-      fontSize: RFValue(18),
+    button: {
+      color: "mainBackground",
+      fontFamily: "Poppins-SemiBold",
+      fontSize: 18,
+      fontWeight: "600",
+      lineHeight: 22,
     },
-    bold20: {
+    defaults: {},
+    header: {
       color: "textColor",
-      fontSize: RFValue(20),
+      fontFamily: "Poppins-SemiBold",
+      fontSize: 24,
+      fontWeight: "600",
     },
-    bold22: {
+    header2: {
       color: "textColor",
-      fontSize: RFValue(22),
+      fontFamily: "Poppins-SemiBold",
+      fontSize: 26,
+      fontWeight: "600",
     },
-    bold24: {
+    header3: {
       color: "textColor",
-      fontSize: RFValue(24),
-    },
-    bold32: {
-      color: "textColor",
-      fontSize: RFValue(32),
-    },
-    bold36: {
-      color: "textColor",
-      fontSize: RFValue(36),
-    },
-    bold48: {
-      color: "textColor",
-      fontSize: RFValue(48),
-    },
-    defaults: {
-      color: "primaryBlack",
-      fontSize: RFValue(14),
-      
-    },
-    medium10: {
-      color: "textColor",
-      fontSize: RFValue(10),
-    },
-    medium12: {
-      color: "textColor",
-      fontSize: RFValue(12),
-    },
-    medium14: {
-      color: "textColor",
-      fontSize: RFValue(14),
-    },
-    medium16: {
-      color: "textColor",
-      fontSize: RFValue(16),
-
-    },
-    medium18: {
-      color: "textColor",
-      fontSize: RFValue(18),
-    },
-    medium20: {
-      color: "textColor",
-      fontSize: RFValue(20),
-
-      lineHeight: RFValue(22),
-    },
-    medium22: {
-      color: "textColor",
-      fontSize: RFValue(22),
-    },
-    medium24: {
-      color: "textColor",
-      fontSize: RFValue(24),
+      fontFamily: "Poppins-Bold",
+      fontSize: 20,
+      fontWeight: "700",
     },
     medium8: {
-      color: "textColor",
-      fontSize: RFValue(8),
+      color: "textColorTint",
+      fontFamily: "Poppins-Medium",
+      fontSize: 8,
+      fontWeight: "600",
     },
-    none: {},
-    regular9: {
-      
-      color: "textColor",
-      fontSize: RFValue(9),
-      
+    medium10: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Medium",
+      fontSize: 10,
+      fontWeight: "600",
     },
-    regular10: {
-      
-      color: "textColor",
-      fontSize: RFValue(10),
-      
+    medium12: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Medium",
+      fontSize: 12,
+      fontWeight: "600",
     },
-    regular12: {
-      
-      color: "textColor",
-      fontSize: RFValue(12),
+    medium14: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Medium",
+      fontSize: 14,
+      lineHeight: 20,
+      fontWeight: "600",
     },
-    regular14: {
-      color: "textColor",
-      
-      fontSize: RFValue(14),
-      
+    medium16: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Medium",
+      fontSize: 16,
+      lineHeight: 20,
+      fontWeight: "600",
     },
-    regular16: {
-      color: "textColor",
-      
-      fontSize: RFValue(16),
-      
+    medium18: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Bold",
+      fontSize: 18,
+      fontWeight: "600",
     },
-    regular18: {
-      color: "textColor",
-      
-      fontSize: RFValue(18),
-      
-    },
-    regular22: {
-      color: "textColor",
-      
-      fontSize: RFValue(22),
-      
-    },
-    regular24: {
-      color: "textColor",
-      
-      fontSize: RFValue(24),
-      
+    medium20: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Bold",
+      fontSize: 20,
+      fontWeight: "600",
     },
     regular8: {
-      
+      color: "textColorTint",
+      fontFamily: "Poppins-Regular",
+      fontSize: 8,
+      fontWeight: "400",
+    },
+    regular10: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Regular",
+      fontSize: 10,
+      fontWeight: "400",
+    },
+    regular12: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Regular",
+      fontSize: 12,
+      lineHeight: 20,
+      fontWeight: "400",
+    },
+    regular14: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Regular",
+      fontSize: 14,
+      lineHeight: 21,
+      fontWeight: "400",
+    },
+    regular16: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Regular",
+      fontSize: 16,
+      fontWeight: "400",
+    },
+    regular18: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Regular",
+      fontSize: 18,
+      fontWeight: "400",
+    },
+    regular20: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Regular",
+      fontSize: 20,
+      fontWeight: "400",
+    },
+    regular24: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Regular",
+      fontSize: 24,
+      fontWeight: "400",
+    },
+    normal14: {
+      color: "textColorTint",
+      fontFamily: "Poppins-Normal",
+      fontSize: 14,
+      lineHeight: 21,
+      fontWeight: "400",
+    },
+    subHeading: {
       color: "textColor",
-      fontSize: RFValue(8),
-    },
-    font10: {
-      
-      fontSize: RFValue(10),
-      
-    },
-    font12: {
-      
-      fontSize: RFValue(12),
-    },
-    font14: {
-      color: "textColor",
-      
-      fontSize: RFValue(14),
-    },
-    font8: {
-      
-      fontSize: RFValue(8),
-    },
-    title: {
-      fontSize: SrfValue(32),
-      
+      fontFamily: "Poppins-SemiBold",
+      fontSize: 18,
+      fontWeight: "600",
+      lineHeight: 21,
     },
   },
 
