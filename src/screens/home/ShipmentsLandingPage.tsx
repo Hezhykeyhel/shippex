@@ -53,7 +53,7 @@ const ShipmentsLandingPage = ({
   const [filterstatusList, setFilterStatusList] = useState<StatusListType[]>(
     [],
   );
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState<any>([]);
 
   const [filterPayload, setFilterPayload] = useState<StatusListType[]>([]);
   const [shipments, setShipments] = useState([]);
@@ -138,7 +138,7 @@ const ShipmentsLandingPage = ({
     setAllIsChecked(!allIsChecked); // Toggle allIsChecked
   };
 
-  const handleMarkOne = id => {
+  const handleMarkOne = (id: number) => {
     let newList = filterstatusList.map((item, index) => {
       if (id === index) {
         return { ...item, ...{ ischecked: !item.ischecked } };
@@ -227,72 +227,77 @@ const ShipmentsLandingPage = ({
     );
   };
   const renderShipmentDetails = () => {
-    const renderItem = ({ item, index }: StatusListType) => {
+    const renderItem = ({ item, index }: StatusListType | any) => {
       return (
-        <Box
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="center"
-          backgroundColor="grayLight"
-          borderRadius="sm"
-          padding="sm"
-          paddingHorizontal={"md"}>
-          <Box>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => handleMarkOne(index)}>
-              <ImageIcon
-                name={item.ischecked ? "checkedbox" : "checkbox"}
-                size="md"
-              />
-            </TouchableOpacity>
-          </Box>
-          <Box>
-            <ImageIcon name="box" size="logo-iconsize" />
-          </Box>
-          <Box>
-            <Text
-              textTransform="uppercase"
-              color="textColor2"
-              variant="regular12">
-              {item.name}
-            </Text>
-            <Text variant="medium16" fontWeight="600">
-              23456798765
-            </Text>
-            <Box flexDirection="row" alignItems="center" columnGap="xs">
-              <Text color="textColor2" variant="regular12">
-                Cairo
-              </Text>
-              <ImageIcon name="arrow" size="xs" />
-              <Text color="textColor2" variant="regular12">
-                Alexandra
-              </Text>
+        <Box>
+          <Box
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+            backgroundColor="grayLight"
+            borderRadius="sm"
+            padding="sm"
+            paddingHorizontal={"md"}>
+            <Box>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => handleMarkOne(index)}>
+                <ImageIcon
+                  name={item.ischecked ? "checkedbox" : "checkbox"}
+                  size="md"
+                />
+              </TouchableOpacity>
             </Box>
-          </Box>
-          <Box>
-            <Box
-              borderWidth={1}
-              borderRadius="sm"
-              paddingVertical="sm"
-              paddingHorizontal="md"
-              backgroundColor="primaryColor10"
-              borderColor="whiteColor">
+            <Box>
+              <ImageIcon name="box" size="logo-iconsize" />
+            </Box>
+            <Box>
               <Text
-                style={{ color: item.color }}
-                variant="regular10"
-                fontWeight="500"
-                textTransform="uppercase">
-                RECEIVED
+                textTransform="uppercase"
+                color="textColor2"
+                variant="regular12">
+                {item.name}
               </Text>
-            </Box>
-          </Box>
-          <Box>
-            <TouchableOpacity>
-              <Box backgroundColor="whiteColor" padding="xs" borderRadius="sm">
-                <ImageIcon name="arrowexpand" size="sm" />
+              <Text variant="medium16" fontWeight="600">
+                23456798765
+              </Text>
+              <Box flexDirection="row" alignItems="center" columnGap="xs">
+                <Text color="textColor2" variant="regular12">
+                  Cairo
+                </Text>
+                <ImageIcon name="arrow" size="xs" />
+                <Text color="textColor2" variant="regular12">
+                  Alexandra
+                </Text>
               </Box>
-            </TouchableOpacity>
+            </Box>
+            <Box>
+              <Box
+                borderWidth={1}
+                borderRadius="sm"
+                paddingVertical="sm"
+                paddingHorizontal="md"
+                backgroundColor="primaryColor10"
+                borderColor="whiteColor">
+                <Text
+                  style={{ color: item.color }}
+                  variant="regular10"
+                  fontWeight="500"
+                  textTransform="uppercase">
+                  RECEIVED
+                </Text>
+              </Box>
+            </Box>
+            <Box>
+              <TouchableOpacity onPress={() => {}}>
+                <Box
+                  backgroundColor="whiteColor"
+                  padding="xs"
+                  borderRadius="sm">
+                  <ImageIcon name="arrowexpand" size="sm" />
+                </Box>
+              </TouchableOpacity>
+            </Box>
           </Box>
         </Box>
       );
@@ -319,6 +324,11 @@ const ShipmentsLandingPage = ({
           contentContainerStyle={{ rowGap: SrfValue(10) }}
           ListFooterComponent={<Box height={SrfValue(330)} />}
           data={filterstatusList}
+          ListEmptyComponent={
+            <Text variant="medium14" padding="md">
+              No search found
+            </Text>
+          }
           refreshControl={
             <RefreshControl
               onRefresh={handleGetStatus}
@@ -331,7 +341,7 @@ const ShipmentsLandingPage = ({
     );
   };
 
-  const renderTags = ({ item }) => {
+  const renderTags = ({ item }: any) => {
     const isSelected = selectedTags.includes(item.id);
 
     return (
@@ -342,9 +352,9 @@ const ShipmentsLandingPage = ({
           width: "32%",
         }}
         onPress={() => {
-          setSelectedTags(prev => {
+          setSelectedTags((prev: any[]) => {
             if (isSelected) {
-              return prev.filter(tagId => tagId !== item.id);
+              return prev.filter((tagId: any) => tagId !== item.id);
             } else {
               return [...prev, item.id];
             }

@@ -47,7 +47,6 @@ const LoginScreen = ({ navigation }: RootNavigationProps<"LoginScreen">) => {
   };
 
   async function handleLogin() {
-    console.log(userFields);
     Keyboard.dismiss();
     setIsLoading(true);
     try {
